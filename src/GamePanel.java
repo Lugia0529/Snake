@@ -61,12 +61,13 @@ public class GamePanel extends JPanel implements KeyListener
         this.mRandom = new Random(System.currentTimeMillis());
     
         this.mSnake = new Snake();
-        this.mFruit = new Coor(mRandom.nextInt(30), mRandom.nextInt(30));
         
         this.mScore = 0;
         this.mUpdateRate = 500;
         
         this.mGameOver = false;
+        
+        spawnFruit();
         
         // Start the game loop thread
         
@@ -246,6 +247,31 @@ public class GamePanel extends JPanel implements KeyListener
     
     //-------------------------------------------------------------------------
     
+    // Spawn the fruit
+    
+    private void spawnFruit()
+    {
+        mainloop:
+        while (true)
+        {
+            // Spawn a new fruit in random location
+            
+            mFruit = new Coor(mRandom.nextInt(30), mRandom.nextInt(30));
+            
+            // Check whether the fruit is collide with the snake body
+            
+            for (Coor c : mSnake.getSnakeBody())
+                if (mFruit.equals(c))
+                    continue mainloop;
+            
+            // Break the loop if fruit didn't collide with the snake body
+            
+            break;
+        }
+    }
+    
+    //-------------------------------------------------------------------------
+    
     // Game loop thread
     
     class SnakeThread extends Thread
@@ -268,8 +294,7 @@ public class GamePanel extends JPanel implements KeyListener
                     {
                         // Spawn a new fruit in random location
                         
-                        mFruit.setX(mRandom.nextInt(30));
-                        mFruit.setY(mRandom.nextInt(30));
+                        spawnFruit();
                         
                         // Increase the snake size by 1
                         
