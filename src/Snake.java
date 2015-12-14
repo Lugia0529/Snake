@@ -89,7 +89,7 @@ public class Snake
     
     // Change the snake moving direction
     
-    public void changeDirection(Direction newDirection) 
+    public Direction changeDirection(Direction newDirection) 
     {
         switch(newDirection) 
         {
@@ -117,6 +117,8 @@ public class Snake
                 
                 break;
         }
+        
+        return mDirection;
     }
     
     //-------------------------------------------------------------------------

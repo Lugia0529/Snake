@@ -48,6 +48,7 @@ public class GamePanel extends JPanel implements KeyListener
     private Coor mFruit;                        // The coordinate of the fruit
     private Snake mSnake;                       // The snake object
     private Random mRandom;                     // Random Generator
+    private Snake.Direction mNewDir;            // New direction of snake
     
     private static final int WIDTH = 30;        // Movable area width
     private static final int HEIGHT = 30;       // Movable area height
@@ -59,8 +60,10 @@ public class GamePanel extends JPanel implements KeyListener
     public GamePanel()
     {
         this.mRandom = new Random(System.currentTimeMillis());
-    
+        
         this.mSnake = new Snake();
+        
+        this.mNewDir = Snake.Direction.RIGHT;
         
         this.mScore = 0;
         this.mUpdateRate = 500;
@@ -134,13 +137,15 @@ public class GamePanel extends JPanel implements KeyListener
         if (mGameOver)
         {
             this.mSnake = new Snake();
-            
-            this.mFruit = new Coor(mRandom.nextInt(30), mRandom.nextInt(30));
+    
+            this.mNewDir = Snake.Direction.RIGHT;
             
             this.mScore = 0;
             this.mUpdateRate = 500;
             
             this.mGameOver = false;
+            
+            spawnFruit();
             
             return;
         }
@@ -150,19 +155,19 @@ public class GamePanel extends JPanel implements KeyListener
         switch (e.getKeyCode())
         {
             case KeyEvent.VK_UP:
-                this.mSnake.changeDirection(Snake.Direction.UP);
+                mNewDir = Snake.Direction.UP;
                 break;
     
             case KeyEvent.VK_DOWN:
-                this.mSnake.changeDirection(Snake.Direction.DOWN);
+                mNewDir = Snake.Direction.DOWN;
                 break;
             
             case KeyEvent.VK_LEFT:
-                this.mSnake.changeDirection(Snake.Direction.LEFT);
+                mNewDir = Snake.Direction.LEFT;
                 break;
             
             case KeyEvent.VK_RIGHT:
-                this.mSnake.changeDirection(Snake.Direction.RIGHT);
+                mNewDir = Snake.Direction.RIGHT;
                 break;
         }
     }
@@ -282,6 +287,10 @@ public class GamePanel extends JPanel implements KeyListener
             {
                 if (!mGameOver)
                 {
+                    // Change the direction of snake
+                    
+                    mNewDir = mSnake.changeDirection(mNewDir);
+                    
                     // Move the snake
                     
                     mSnake.move();
