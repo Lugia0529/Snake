@@ -38,7 +38,7 @@ import javax.swing.JPanel;
 
 //-----------------------------------------------------------------------------
 
-public class GamePanel extends JPanel implements KeyListener 
+public class GamePanel extends JPanel implements KeyListener
 {
     private int mScore;                         // Player score
     private int mUpdateRate;                    // Snake move speed
@@ -105,35 +105,11 @@ public class GamePanel extends JPanel implements KeyListener
         
         // Draw fruit
         
-        g2d.setColor(Color.YELLOW);
-        
-        int posX = 25 + this.mFruit.getX() * 15;
-        int posY = 45 + this.mFruit.getY() * 15;
-        
-        drawCircle(g2d, posX, posY, 12);
+        drawFruit(g2d);
         
         // Draw snake
         
-        g2d.setColor(Color.BLUE);
-        
-        List<Coor> snakeBody = mSnake.getSnakeBody();
-        
-        Coor c = (Coor)snakeBody.get(0);
-        
-        posX = 25 + c.getX() * 15;
-        posY = 45 + c.getY() * 15;
-        
-        drawCircle(g2d, posX, posY, 16);
-        
-        for (int i = 1; i < snakeBody.size(); i++)
-        {
-            c = (Coor)snakeBody.get(i);
-            
-            posX = 25 + c.getX() * 15;
-            posY = 45 + c.getY() * 15;
-            
-            drawCircle(g2d, posX, posY, 12);
-        }
+        drawSnake(g2d);
         
         // Draw game over text
         
@@ -144,18 +120,17 @@ public class GamePanel extends JPanel implements KeyListener
             
             g2d.drawString("Game Over", 100, 280);
         }
-        
     }
     
     //-------------------------------------------------------------------------
     
     // Event handler of key press event
     
-    public void keyPressed(KeyEvent e) 
+    public void keyPressed(KeyEvent e)
     {
         // Restart the game if game is over
         
-        if (mGameOver) 
+        if (mGameOver)
         {
             this.mSnake = new Snake();
             
@@ -171,7 +146,7 @@ public class GamePanel extends JPanel implements KeyListener
         
         // Change direction
         
-        switch(e.getKeyCode())
+        switch (e.getKeyCode())
         {
             case KeyEvent.VK_UP:
                 this.mSnake.changeDirection(Snake.Direction.UP);
@@ -213,12 +188,60 @@ public class GamePanel extends JPanel implements KeyListener
     
     // Draw circle from center
     
-    private void drawCircle(Graphics2D g2d, int x, int y, int radius) 
+    private void drawCircle(Graphics2D g2d, int x, int y, int radius)
     {
         x -= radius / 2;
         y -= radius / 2;
         
         g2d.fillOval(x, y, radius, radius);
+    }
+    
+    //-------------------------------------------------------------------------
+    
+    // Draw the fruit
+    
+    private void drawFruit(Graphics2D g2d)
+    {
+        g2d.setColor(Color.YELLOW);
+    
+        Coor fruitCoor = calcCoordinate(mFruit);
+    
+        drawCircle(g2d, fruitCoor.getX(), fruitCoor.getY(), 12);
+    }
+    
+    //-------------------------------------------------------------------------
+    
+    // Draw the snake
+    
+    private void drawSnake(Graphics2D g2d)
+    {
+        g2d.setColor(Color.BLUE);
+        
+        // Draw the snake head
+        
+        Coor c = calcCoordinate(mSnake.getSnakeHead());
+        
+        drawCircle(g2d, c.getX(), c.getY(), 16);
+        
+        // Draw the snake body
+        
+        List<Coor> snakeBody = mSnake.getSnakeBody();
+        
+        for (int i = 1; i < snakeBody.size(); i++)
+        {
+            c = calcCoordinate(snakeBody.get(i));
+            
+            drawCircle(g2d, c.getX(), c.getY(), 12);
+        }
+    }
+    
+    //-------------------------------------------------------------------------
+    
+    // Calculate the game UI coordinate
+    
+    private Coor calcCoordinate(Coor coor)
+    {
+        return new Coor(25 + coor.getX() * 15, 45 + coor.getY() * 15);
     }
     
     //-------------------------------------------------------------------------
